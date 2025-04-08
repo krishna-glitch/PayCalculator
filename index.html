@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Total Hours + Week Calendar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="container">
+    <h2>Total Hours Worked Calculator</h2>
+
+    <div class="form-group">
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" placeholder="02/17/2025">
+      <span class="error-message" id="startDateError"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" placeholder="11/30/2025">
+      <span class="error-message" id="endDateError"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="hoursPerWeek">Hours Worked Per Week:</label>
+      <input type="number" id="hoursPerWeek" placeholder="29">
+      <span class="error-message" id="hoursPerWeekError"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="hourlyRate">Hourly Rate ($):</label>
+      <input type="number" id="hourlyRate" placeholder="25" step="0.01">
+      <span class="error-message" id="hourlyRateError"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="totalHoursInput">Total Hours (Optional):</label>
+      <input type="number" id="totalHoursInput" placeholder="122">
+      <span class="error-message" id="totalHoursInputError"></span>
+    </div>
+
+    <button id="calculateButton">Calculate</button>
+
+    <div class="result">
+      <p><strong>Weeks Passed (from start to today):</strong> <span id="weeksPassed">--</span></p>
+      <p><strong>Hours Worked:</strong> <span id="totalHours">--</span></p>
+      <p><strong>Weeks Remaining (from today to end date):</strong> <span id="weeksRemaining">--</span></p>
+      <p><strong>Remaining Hours to Get Paid from today:</strong> <span id="remainingHours">--</span></p>
+      <p><strong>Remaining Hours to Get Paid until today:</strong> <span id="remainingHoursUntilToday">--</span></p>
+      <p><strong>Amount Paid (for Optional Total Hours) ($):</strong> <span id="confirmedTotal">--</span></p>
+      <p><strong>Total Amount Paid from today ($):</strong> <span id="amountPaidFromToday">--</span></p>
+    </div>
+  </div>
+
+  <div class="calendar">
+    <div class="calendar-header">
+        <button id="prevYearBtn" class="year-nav-btn">&lt;</button>
+        <h2 id="calendarTitle">Week Numbers of Year</h2>
+        <button id="nextYearBtn" class="year-nav-btn">&gt;</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>From</th>
+          <th>To</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody id="weekTableBody">
+        </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
