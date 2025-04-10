@@ -1,250 +1,310 @@
 /* === Global Reset & Box Sizing === */
 *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* === Body Styling === */
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    background-color: #f8f9fa;
-    color: #212529;
-    margin: 0;
-    padding: 40px;
-    line-height: 1.6;
-  }
-  
-  /* === Wrapper Layout === */
-  .wrapper {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* === Body Styling === */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+  padding: 40px;
+  line-height: 1.6;
+}
+
+/* === Wrapper Layout === */
+.wrapper {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* === Container/Card Styling === */
+.container, .calendar, .payment-schedule {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  flex: 1 1 400px;
+  min-width: 320px;
+  margin-bottom: 20px;
+}
+
+/* === Headings === */
+h2 {
+  text-align: center;
+  color: #343a40;
+  margin-bottom: 25px;
+  font-weight: 600;
+  margin-top: 0; /* Reset margin for h2 */
+}
+
+/* === Form Elements Styling === */
+.form-group {
+    margin-bottom: 20px; /* Increased Space below each form group */
+    position: relative; /* Needed for absolute positioning of error messages if desired */
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+input[type="number"],
+input[type="date"] {
+  width: 100%;
+  padding: 12px 15px;
+  /* margin-bottom: 20px; Removed - handled by form-group */
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="number"]:focus,
+input[type="date"]:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* === Input Error Styling === */
+input.input-error {
+    border-color: #dc3545; /* Red border for error */
+}
+
+input.input-error:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Red glow on focus */
+}
+
+.error-message {
+    color: #dc3545; /* Red text */
+    font-size: 0.875em; /* Smaller font size */
+    display: none; /* Hidden by default */
+    margin-top: 6px; /* Space above error message */
+    /* position: absolute; Example if you want it positioned differently */
+    /* bottom: -18px; */
+    /* left: 0; */
+}
+
+/* === Button Styling === */
+button {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* === Results Box Styling === */
+.result {
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 25px;
+  border: 1px solid #dee2e6;
+}
+
+.result p {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  color: #495057;
+}
+
+.result p:last-child {
+  margin-bottom: 0;
+}
+
+.result strong {
+  color: #212529;
+  margin-right: 5px;
+}
+
+/* === Calendar Styling === */
+.calendar-header {
     display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* === Container/Card Styling === */
-  .container, .calendar {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    flex: 1 1 400px;
-    min-width: 320px;
-    margin-bottom: 20px;
-  }
-  
-  /* === Headings === */
-  h2 {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Space below header */
+    position: relative; /* For potential absolute positioning inside */
+}
+
+.calendar-header h2 {
+    margin: 0 10px; /* Add horizontal margin */
+    flex-grow: 1;
     text-align: center;
-    color: #343a40;
-    margin-bottom: 25px;
-    font-weight: 600;
-    margin-top: 0; /* Reset margin for h2 */
-  }
-  
-  /* === Form Elements Styling === */
-  .form-group {
-      margin-bottom: 20px; /* Increased Space below each form group */
-      position: relative; /* Needed for absolute positioning of error messages if desired */
-  }
-  
-  label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 8px;
-    color: #495057;
-  }
-  
-  input[type="number"],
-  input[type="date"] {
-    width: 100%;
-    padding: 12px 15px;
-    /* margin-bottom: 20px; Removed - handled by form-group */
-    border-radius: 6px;
+    font-size: 1.4rem;
+}
+
+.year-nav-btn {
+    background: none;
     border: 1px solid #ced4da;
-    font-size: 1rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  input[type="number"]:focus,
-  input[type="date"]:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  }
-  
-  /* === Input Error Styling === */
-  input.input-error {
-      border-color: #dc3545; /* Red border for error */
-  }
-  
-  input.input-error:focus {
-      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Red glow on focus */
-  }
-  
-  .error-message {
-      color: #dc3545; /* Red text */
-      font-size: 0.875em; /* Smaller font size */
-      display: none; /* Hidden by default */
-      margin-top: 6px; /* Space above error message */
-      /* position: absolute; Example if you want it positioned differently */
-      /* bottom: -18px; */
-      /* left: 0; */
-  }
-  
-  /* === Button Styling === */
-  button {
-    width: 100%;
-    padding: 12px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
+    color: #007bff;
+    padding: 5px 10px;
+    border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: 600;
-    margin-top: 15px;
-    transition: background-color 0.2s ease;
+    line-height: 1;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    width: auto; /* Override default button width */
+    /* margin: 0 5px; Removed - handled by flex spacing */
+    flex-shrink: 0;
+}
+
+.year-nav-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+
+.calendar table, .payment-schedule table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar th, .calendar td, .payment-schedule th, .payment-schedule td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #dee2e6;
+  text-align: left;
+  font-size: 0.95em;
+  vertical-align: middle;
+}
+
+.calendar th, .payment-schedule th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  position: sticky; /* Make header sticky if table scrolls */
+  top: 0; /* Adjust if needed based on layout */
+  z-index: 1;
+}
+
+.calendar td:nth-child(4) { /* Target the '%' column */
+   text-align: right;
+   font-weight: 500;
+}
+
+.highlight {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  font-weight: bold;
+  border-left: 3px solid #007bff;
+}
+
+.highlight td {
+   border-bottom-color: #b8daff;
+}
+
+/* === Payment Schedule Styling === */
+.payment-schedule {
+  margin-top: 20px;
+}
+
+.payment-info {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.payment-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.month-nav-btn {
+  background: none;
+  border: 1px solid #ced4da;
+  color: #007bff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  width: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.month-nav-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+#currentMonthYear {
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.payment-status-paid {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.payment-status-pending {
+  color: #fd7e14;
+  font-weight: 600;
+}
+
+.payment-status-future {
+  color: #6c757d;
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 900px) {
+  .wrapper {
+    gap: 30px;
   }
-  
-  button:hover {
-    background-color: #0056b3;
+  .container, .calendar, .payment-schedule {
+     flex-basis: 45%;
   }
-  
-  /* === Results Box Styling === */
-  .result {
-    background-color: #e9ecef;
+}
+
+@media (max-width: 768px) {
+  body {
     padding: 20px;
-    border-radius: 8px;
-    margin-top: 25px;
-    border: 1px solid #dee2e6;
   }
-  
-  .result p {
-    margin-bottom: 12px;
-    line-height: 1.5;
-    color: #495057;
+  .wrapper {
+    flex-direction: column;
+    gap: 25px;
   }
-  
-  .result p:last-child {
-    margin-bottom: 0;
-  }
-  
-  .result strong {
-    color: #212529;
-    margin-right: 5px;
-  }
-  
-  /* === Calendar Styling === */
-  .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px; /* Space below header */
-      position: relative; /* For potential absolute positioning inside */
-  }
-  
-  .calendar-header h2 {
-      margin: 0 10px; /* Add horizontal margin */
-      flex-grow: 1;
-      text-align: center;
-      font-size: 1.4rem;
-  }
-  
-  .year-nav-btn {
-      background: none;
-      border: 1px solid #ced4da;
-      color: #007bff;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      transition: background-color 0.2s ease, color 0.2s ease;
-      width: auto; /* Override default button width */
-      /* margin: 0 5px; Removed - handled by flex spacing */
-      flex-shrink: 0;
-  }
-  
-  .year-nav-btn:hover {
-      background-color: #007bff;
-      color: white;
-  }
-  
-  
-  .calendar table {
+  .container, .calendar, .payment-schedule {
+    flex-basis: auto;
     width: 100%;
-    border-collapse: collapse;
   }
-  
-  .calendar th, .calendar td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #dee2e6;
-    text-align: left;
-    font-size: 0.95em;
-    vertical-align: middle;
+   .calendar-header h2 {
+      font-size: 1.2rem;
   }
-  
-  .calendar th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #495057;
-    position: sticky; /* Make header sticky if table scrolls */
-    top: 0; /* Adjust if needed based on layout */
-    z-index: 1;
+  .year-nav-btn, .month-nav-btn {
+      padding: 4px 8px;
+      font-size: 0.9rem;
   }
-  
-  .calendar td:nth-child(4) { /* Target the '%' column */
-     text-align: right;
-     font-weight: 500;
+  .calendar th, .calendar td, .payment-schedule th, .payment-schedule td {
+      padding: 8px 10px; /* Reduce padding on smaller screens */
+      font-size: 0.9em;
   }
-  
-  .highlight {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    font-weight: bold;
-    border-left: 3px solid #007bff;
-  }
-  
-  .highlight td {
-     border-bottom-color: #b8daff;
-  }
-  
-  /* === Responsive Adjustments === */
-  @media (max-width: 900px) {
-    .wrapper {
-      gap: 30px;
-    }
-    .container, .calendar {
-       flex-basis: 45%;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    body {
-      padding: 20px;
-    }
-    .wrapper {
-      flex-direction: column;
-      gap: 25px;
-    }
-    .container, .calendar {
-      flex-basis: auto;
-      width: 100%;
-    }
-     .calendar-header h2 {
-        font-size: 1.2rem;
-    }
-    .year-nav-btn {
-        padding: 4px 8px;
-        font-size: 0.9rem;
-    }
-    .calendar th, .calendar td {
-        padding: 8px 10px; /* Reduce padding on smaller screens */
-        font-size: 0.9em;
-    }
-  }
+}

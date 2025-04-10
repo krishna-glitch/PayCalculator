@@ -37,9 +37,15 @@
     </div>
 
     <div class="form-group">
-      <label for="totalHoursInput">Total Hours (Optional):</label>
+      <label for="totalHoursInput">Total Hours I Got Paid:</label>
       <input type="number" id="totalHoursInput" placeholder="122">
       <span class="error-message" id="totalHoursInputError"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="totalBudget">Total Budget ($):</label>
+      <input type="number" id="totalBudget" placeholder="5000" step="0.01">
+      <span class="error-message" id="totalBudgetError"></span>
     </div>
 
     <button id="calculateButton">Calculate</button>
@@ -50,9 +56,34 @@
       <p><strong>Weeks Remaining (from today to end date):</strong> <span id="weeksRemaining">--</span></p>
       <p><strong>Remaining Hours to Get Paid from today:</strong> <span id="remainingHours">--</span></p>
       <p><strong>Remaining Hours to Get Paid until today:</strong> <span id="remainingHoursUntilToday">--</span></p>
-      <p><strong>Amount Paid (for Optional Total Hours) ($):</strong> <span id="confirmedTotal">--</span></p>
+      <p><strong>Amount Paid (for Total Hours I Got Paid) ($):</strong> <span id="confirmedTotal">--</span></p>
       <p><strong>Total Amount Paid from today ($):</strong> <span id="amountPaidFromToday">--</span></p>
+      <p><strong>Budget Used ($):</strong> <span id="budgetUsed">--</span></p>
+      <p><strong>Budget Remaining ($):</strong> <span id="budgetRemaining">--</span></p>
     </div>
+  </div>
+
+  <div class="payment-schedule">
+    <h2>Payment Schedule</h2>
+    <p class="payment-info">Payments occur twice a month: on the 19th and on the 4th of the next month</p>
+    <div class="payment-controls">
+      <button id="prevMonthBtn" class="month-nav-btn">&lt;</button>
+      <span id="currentMonthYear">April 2025</span>
+      <button id="nextMonthBtn" class="month-nav-btn">&gt;</button>
+    </div>
+    <table id="paymentTable">
+      <thead>
+        <tr>
+          <th>Pay Period</th>
+          <th>Hours</th>
+          <th>Amount ($)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="paymentTableBody">
+        <!-- Payment periods will be populated here -->
+      </tbody>
+    </table>
   </div>
 
   <div class="calendar">

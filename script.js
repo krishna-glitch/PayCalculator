@@ -1,5 +1,7 @@
-// Global variable for calendar year
+// Global variables
 let currentCalendarYear;
+let currentPaymentMonth;
+let currentPaymentYear;
 
 // === Validation Helper Functions ===
 function showError(inputId, message) {
@@ -32,6 +34,154 @@ function clearAllErrors() {
     clearError('hoursPerWeek');
     clearError('hourlyRate');
     clearError('totalHoursInput');
+    clearError('totalBudget');
+}
+
+// === Date/Time Helper Functions ===
+function formatDate(date) {
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    if (date instanceof Date && !isNaN(date)) {
+        return date.toLocaleDateString('en-US', options);
+    }
+    return 'Invalid Date';
+}
+
+function formatMonthYear(date) {
+    const options = { month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+// === Get Pay Periods for a Month ===
+function getPayPeriodsForMonth(year, month, startDate, endDate, hoursPerWeek, hourlyRate) {
+    const payPeriods = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // First pay period (5th to 19th, paid on 19th)
+    const firstPayDay = new Date(year, month, 19);
+    const firstPeriodStart = new Date(year, month, 5); // Assuming it starts on the 5th
+    const firstPeriodEnd = new Date(year, month, 19);
+
+    // Second pay period (20th to 4th of next month, paid on 4th of next month)
+    const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+    const secondPayDay = new Date(year, month + 1, 4);
+    const secondPeriodStart = new Date(year, month, 20);
+    const secondPeriodEnd = new Date(year, month + 1, 4);
+
+    // Check if periods are within the contract dates
+    const contractStart = new Date(startDate);
+    const contractEnd = new Date(endDate);
+    contractStart.setHours(0, 0, 0, 0);
+    contractEnd.setHours(0, 0, 0, 0);
+
+    // Calculate hours for first period (5th-19th)
+    if (firstPeriodEnd >= contractStart && firstPeriodStart <= contractEnd) {
+        const actualStart = new Date(Math.max(firstPeriodStart.getTime(), contractStart.getTime()));
+        const actualEnd = new Date(Math.min(firstPeriodEnd.getTime(), contractEnd.getTime()));
+        const days = (actualEnd - actualStart) / (1000 * 60 * 60 * 24) + 1;
+        const hours = (days / 7) * hoursPerWeek;
+        const amount = hours * hourlyRate;
+
+        let status = 'Future';
+        if (today > firstPayDay) {
+            status = 'Paid';
+        } else if (today >= firstPeriodStart) {
+            status = 'Pending';
+        }
+
+        payPeriods.push({
+            period: `5th-19th`,
+            hours: hours.toFixed(2),
+            amount: amount.toFixed(2),
+            status: status
+        });
+    }
+
+    // Calculate hours for second period (20th-4th)
+    if (secondPeriodEnd >= contractStart && secondPeriodStart <= contractEnd) {
+        const actualStart = new Date(Math.max(secondPeriodStart.getTime(), contractStart.getTime()));
+        const actualEnd = new Date(Math.min(secondPeriodEnd.getTime(), contractEnd.getTime()));
+        const days = (actualEnd - actualStart) / (1000 * 60 * 60 * 24) + 1;
+        const hours = (days / 7) * hoursPerWeek;
+        const amount = hours * hourlyRate;
+
+        let status = 'Future';
+        if (today > secondPayDay) {
+            status = 'Paid';
+        } else if (today >= secondPeriodStart) {
+            status = 'Pending';
+        }
+
+        payPeriods.push({
+            period: `20th-4th`,
+            hours: hours.toFixed(2),
+            amount: amount.toFixed(2),
+            status: status
+        });
+    }
+
+    return payPeriods;
+}
+
+// === Update Payment Schedule Table ===
+function updatePaymentSchedule() {
+    const startDateInput = document.getElementById('startDate').value;
+    const endDateInput = document.getElementById('endDate').value;
+    const hoursPerWeekInput = document.getElementById('hoursPerWeek').value;
+    const hourlyRateInput = document.getElementById('hourlyRate').value;
+
+    if (!startDateInput || !endDateInput || !hoursPerWeekInput || !hourlyRateInput) {
+        // Not enough data to calculate payment schedule
+        return;
+    }
+
+    const startDate = new Date(startDateInput);
+    const endDate = new Date(endDateInput);
+    const hoursPerWeek = parseFloat(hoursPerWeekInput);
+    const hourlyRate = parseFloat(hourlyRateInput);
+
+    if (isNaN(startDate) || isNaN(endDate) || isNaN(hoursPerWeek) || isNaN(hourlyRate)) {
+        // Invalid input data
+        return;
+    }
+
+    const paymentTableBody = document.getElementById('paymentTableBody');
+    paymentTableBody.innerHTML = '';
+
+    // Update the month-year display
+    document.getElementById('currentMonthYear').textContent = formatMonthYear(new Date(currentPaymentYear, currentPaymentMonth));
+
+    // Get pay periods for the current month
+    const payPeriods = getPayPeriodsForMonth(
+        currentPaymentYear, 
+        currentPaymentMonth, 
+        startDate, 
+        endDate, 
+        hoursPerWeek, 
+        hourlyRate
+    );
+
+    if (payPeriods.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="4" style="text-align: center;">No pay periods in this month</td>`;
+        paymentTableBody.appendChild(tr);
+        return;
+    }
+
+    // Add pay periods to the table
+    payPeriods.forEach(period => {
+        const tr = document.createElement('tr');
+        const statusClass = `payment-status-${period.status.toLowerCase()}`;
+        
+        tr.innerHTML = `
+            <td>${period.period}</td>
+            <td>${period.hours}</td>
+            <td>$${period.amount}</td>
+            <td class="${statusClass}">${period.status}</td>
+        `;
+        
+        paymentTableBody.appendChild(tr);
+    });
 }
 
 // === Main Calculation Function ===
@@ -48,12 +198,14 @@ function calculateTotalHours() {
   const hoursPerWeekEl = document.getElementById("hoursPerWeek");
   const totalHoursInputEl = document.getElementById("totalHoursInput");
   const hourlyRateEl = document.getElementById("hourlyRate");
+  const totalBudgetEl = document.getElementById("totalBudget");
 
   const startInput = startInputEl.value;
   const endInput = endInputEl.value;
   const hoursPerWeekInput = hoursPerWeekEl.value;
   const totalHoursInputStr = totalHoursInputEl.value;
   const hourlyRateStr = hourlyRateEl.value;
+  const totalBudgetStr = totalBudgetEl.value;
 
   // Clear previous errors before re-validating
   clearAllErrors();
@@ -81,8 +233,13 @@ function calculateTotalHours() {
   }
   // Optional: Validate optional total hours if entered
   if (totalHoursInputStr && (isNaN(parseFloat(totalHoursInputStr)) || parseFloat(totalHoursInputStr) < 0)) {
-      showError('totalHoursInput', 'Please enter a valid non-negative number for optional total hours.');
+      showError('totalHoursInput', 'Please enter a valid non-negative number for total hours.');
       // We don't set isValid = false here, calculations can proceed without optional hours
+  }
+  // Optional: Validate budget if entered
+  if (totalBudgetStr && (isNaN(parseFloat(totalBudgetStr)) || parseFloat(totalBudgetStr) < 0)) {
+      showError('totalBudget', 'Please enter a valid non-negative number for total budget.');
+      // We don't set isValid = false here, calculations can proceed without budget
   }
 
 
@@ -114,6 +271,8 @@ function calculateTotalHours() {
     document.getElementById("remainingHoursUntilToday").textContent = '--';
     document.getElementById("confirmedTotal").textContent = '--';
     document.getElementById("amountPaidFromToday").textContent = '--';
+    document.getElementById("budgetUsed").textContent = '--';
+    document.getElementById("budgetRemaining").textContent = '--';
     return;
   }
 
@@ -121,6 +280,7 @@ function calculateTotalHours() {
   const hoursPerWeek = parseFloat(hoursPerWeekInput);
   const totalHoursInputVal = parseFloat(totalHoursInputStr); // May be NaN
   const hourlyRate = parseFloat(hourlyRateStr); // May be NaN
+  const totalBudget = parseFloat(totalBudgetStr); // May be NaN
 
   const today = new Date();
   startDate.setHours(0, 0, 0, 0);
@@ -143,32 +303,44 @@ function calculateTotalHours() {
 
   // Calculate Remaining Hours Until Today
   let remainingUntilToday = '--';
-   if (!isNaN(totalHoursInputVal) && totalHoursInputVal >= 0) {
-     remainingUntilToday = (totalHoursInputVal - totalHoursWorked).toFixed(2) + " hours";
-   } else {
-     remainingUntilToday = 'N/A';
-   }
+  if (!isNaN(totalHoursInputVal) && totalHoursInputVal >= 0) {
+    remainingUntilToday = (totalHoursInputVal - totalHoursWorked).toFixed(2) + " hours";
+  } else {
+    remainingUntilToday = 'N/A';
+  }
 
-
-  // Calculate and display Amount Paid based on Optional Total Hours
-  let amountPaidForOptionalHours = '--';
+  // Calculate and display Amount Paid based on Total Hours I Got Paid
+  let amountPaidForTotalHours = '--';
   if (!isNaN(totalHoursInputVal) && totalHoursInputVal > 0 && !isNaN(hourlyRate) && hourlyRate > 0) {
-    amountPaidForOptionalHours = (totalHoursInputVal * hourlyRate).toFixed(2);
-    document.getElementById("confirmedTotal").textContent = `$${amountPaidForOptionalHours}`;
+    amountPaidForTotalHours = (totalHoursInputVal * hourlyRate).toFixed(2);
+    document.getElementById("confirmedTotal").textContent = `${amountPaidForTotalHours}`;
   } else {
     document.getElementById("confirmedTotal").textContent = '--';
   }
-
 
   // Calculate and display Total Amount Paid FROM today
   let amountPaidFromToday = '--';
   if (!isNaN(hourlyRate) && hourlyRate > 0) {
     amountPaidFromToday = (remainingHours * hourlyRate).toFixed(2);
-    document.getElementById("amountPaidFromToday").textContent = `$${amountPaidFromToday}`;
+    document.getElementById("amountPaidFromToday").textContent = `${amountPaidFromToday}`;
   } else {
     document.getElementById("amountPaidFromToday").textContent = '--';
   }
 
+  // Calculate and display Budget Used and Budget Remaining
+  if (!isNaN(totalBudget) && totalBudget > 0 && !isNaN(totalHoursInputVal) && totalHoursInputVal >= 0 && !isNaN(hourlyRate) && hourlyRate > 0) {
+    const budgetUsed = (totalHoursInputVal * hourlyRate).toFixed(2);
+    const budgetRemaining = (totalBudget - budgetUsed).toFixed(2);
+    
+    document.getElementById("budgetUsed").textContent = `${budgetUsed}`;
+    document.getElementById("budgetRemaining").textContent = `${budgetRemaining}`;
+  } else {
+    document.getElementById("budgetUsed").textContent = '--';
+    document.getElementById("budgetRemaining").textContent = '--';
+  }
+
+  // Update payment schedule
+  updatePaymentSchedule();
 
   // Update other HTML elements
   document.getElementById("weeksPassed").textContent = `${weeksPassed} weeks and ${extraDaysPassed} days`;
@@ -178,9 +350,7 @@ function calculateTotalHours() {
   document.getElementById("remainingHoursUntilToday").textContent = remainingUntilToday;
 }
 
-
 // === Calendar Functions ===
-// ... (getWeekStartEnd, formatDate, generateWeeksForYear, getWeekNumber functions remain the same as before) ...
 function getWeekStartEnd(year, weekNumber) {
   const janFirst = new Date(year, 0, 1);
   const dayOfWeek = janFirst.getDay() || 7;
@@ -193,14 +363,6 @@ function getWeekStartEnd(year, weekNumber) {
   return { start, end };
 }
 
-function formatDate(date) {
-  const options = { weekday: 'short', month: 'short', day: 'numeric' };
-  if (date instanceof Date && !isNaN(date)) {
-      return date.toLocaleDateString('en-US', options);
-  }
-  return 'Invalid Date';
-}
-
 function generateWeeksForYear(year) {
   const tbody = document.getElementById('weekTableBody');
   tbody.innerHTML = '';
@@ -209,9 +371,8 @@ function generateWeeksForYear(year) {
 
   const lastDayOfYear = new Date(year, 11, 31);
   const weekOfLastDay = getWeekNumber(lastDayOfYear);
-   const dayOfLastDay = lastDayOfYear.getDay() || 7;
-   const totalWeeks = (weekOfLastDay < 52) ? 52 : ((dayOfLastDay >= 4 || weekOfLastDay === 53) ? 53 : 52);
-
+  const dayOfLastDay = lastDayOfYear.getDay() || 7;
+  const totalWeeks = (weekOfLastDay < 52) ? 52 : ((dayOfLastDay >= 4 || weekOfLastDay === 53) ? 53 : 52);
 
   const totalDaysInYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 366 : 365;
 
@@ -223,12 +384,12 @@ function generateWeeksForYear(year) {
   for (let week = 1; week <= totalWeeks; week++) {
     const { start, end } = getWeekStartEnd(year, week);
 
-     if(start.getFullYear() < year){
-         start.setFullYear(year, 0, 1);
-     }
-     if(end.getFullYear() > year){
-         end.setFullYear(year, 11, 31);
-     }
+    if(start.getFullYear() < year){
+        start.setFullYear(year, 0, 1);
+    }
+    if(end.getFullYear() > year){
+        end.setFullYear(year, 11, 31);
+    }
 
     const yearStartDate = new Date(year, 0, 1);
     const daysElapsed = Math.max(0, Math.floor((end - yearStartDate) / (1000 * 60 * 60 * 24)) + 1);
@@ -250,7 +411,6 @@ function generateWeeksForYear(year) {
   }
 }
 
-
 function getWeekNumber(d) {
     if (!(d instanceof Date && !isNaN(d))) return NaN;
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -260,10 +420,37 @@ function getWeekNumber(d) {
     return weekNo;
 }
 
+// === Navigation Functions for Payment Schedule ===
+function prevMonth() {
+    if (currentPaymentMonth === 0) {
+        currentPaymentMonth = 11;
+        currentPaymentYear--;
+    } else {
+        currentPaymentMonth--;
+    }
+    updatePaymentSchedule();
+}
+
+function nextMonth() {
+    if (currentPaymentMonth === 11) {
+        currentPaymentMonth = 0;
+        currentPaymentYear++;
+    } else {
+        currentPaymentMonth++;
+    }
+    updatePaymentSchedule();
+}
+
 // === Initialization and Event Listeners ===
 window.onload = function() {
+  // Initialize calendar
   currentCalendarYear = new Date().getFullYear();
   generateWeeksForYear(currentCalendarYear);
+
+  // Initialize payment schedule
+  const today = new Date();
+  currentPaymentMonth = today.getMonth();
+  currentPaymentYear = today.getFullYear();
 
   // Add event listeners for year navigation
   document.getElementById('prevYearBtn').addEventListener('click', () => {
@@ -276,8 +463,12 @@ window.onload = function() {
       generateWeeksForYear(currentCalendarYear);
   });
 
+  // Add event listeners for payment month navigation
+  document.getElementById('prevMonthBtn').addEventListener('click', prevMonth);
+  document.getElementById('nextMonthBtn').addEventListener('click', nextMonth);
+
   // --- Add listeners to input fields for automatic calculation ---
-  const inputIdsToWatch = ['startDate', 'endDate', 'hoursPerWeek', 'hourlyRate', 'totalHoursInput'];
+  const inputIdsToWatch = ['startDate', 'endDate', 'hoursPerWeek', 'hourlyRate', 'totalHoursInput', 'totalBudget'];
   inputIdsToWatch.forEach(id => {
       const inputElement = document.getElementById(id);
       if (inputElement) {
@@ -294,5 +485,4 @@ window.onload = function() {
 
   // Initial calculation attempt in case inputs have default values (e.g., from browser cache)
   // calculateTotalHours(); // You might uncomment this if needed, but placeholders won't trigger it
-
 };
