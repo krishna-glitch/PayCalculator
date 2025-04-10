@@ -9,6 +9,7 @@
 
 <div class="wrapper">
 
+  <!-- Input form container -->
   <div class="container">
     <h2>Total Hours Worked Calculator</h2>
 
@@ -25,7 +26,7 @@
     </div>
 
     <div class="form-group">
-      <label for="hoursPerWeek">Hours Worked Per Week:</label>
+      <label for="hoursPerWeek">Hours Worked Per Week (Monday-Friday):</label>
       <input type="number" id="hoursPerWeek" placeholder="29">
       <span class="error-message" id="hoursPerWeekError"></span>
     </div>
@@ -50,6 +51,7 @@
 
     <button id="calculateButton">Calculate</button>
 
+    <!-- Results display area -->
     <div class="result">
       <p><strong>Weeks Passed (from start to today):</strong> <span id="weeksPassed">--</span></p>
       <p><strong>Hours Worked:</strong> <span id="totalHours">--</span></p>
@@ -63,6 +65,7 @@
     </div>
   </div>
 
+  <!-- Payment schedule section -->
   <div class="payment-schedule">
     <h2>Payment Schedule</h2>
     <p class="payment-info">Payments occur twice a month: on the 19th and on the 4th of the next month</p>
@@ -81,11 +84,12 @@
         </tr>
       </thead>
       <tbody id="paymentTableBody">
-        <!-- Payment periods will be populated here -->
+        <!-- Payment periods will be populated by JavaScript -->
       </tbody>
     </table>
   </div>
 
+  <!-- Weekly calendar display -->
   <div class="calendar">
     <div class="calendar-header">
         <button id="prevYearBtn" class="year-nav-btn">&lt;</button>
@@ -102,7 +106,8 @@
         </tr>
       </thead>
       <tbody id="weekTableBody">
-        </tbody>
+        <!-- Week rows will be populated by JavaScript -->
+      </tbody>
     </table>
   </div>
 

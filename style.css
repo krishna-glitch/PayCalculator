@@ -1,11 +1,11 @@
-/* === Global Reset & Box Sizing === */
+/* Reset defaults and set box-sizing for all elements */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* === Body Styling === */
+/* Base body styling */
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   background-color: #f8f9fa;
@@ -15,7 +15,7 @@ body {
   line-height: 1.6;
 }
 
-/* === Wrapper Layout === */
+/* Main layout wrapper */
 .wrapper {
   display: flex;
   gap: 40px;
@@ -26,7 +26,7 @@ body {
   margin: 0 auto;
 }
 
-/* === Container/Card Styling === */
+/* Card styling for all main content sections */
 .container, .calendar, .payment-schedule {
   background-color: #ffffff;
   padding: 30px;
@@ -37,21 +37,22 @@ body {
   margin-bottom: 20px;
 }
 
-/* === Headings === */
+/* Section headings */
 h2 {
   text-align: center;
   color: #343a40;
   margin-bottom: 25px;
   font-weight: 600;
-  margin-top: 0; /* Reset margin for h2 */
+  margin-top: 0;
 }
 
-/* === Form Elements Styling === */
+/* Form element groups */
 .form-group {
-    margin-bottom: 20px; /* Increased Space below each form group */
-    position: relative; /* Needed for absolute positioning of error messages if desired */
+    margin-bottom: 20px;
+    position: relative;
 }
 
+/* Form labels */
 label {
   font-weight: 600;
   display: block;
@@ -59,17 +60,18 @@ label {
   color: #495057;
 }
 
+/* Form inputs */
 input[type="number"],
 input[type="date"] {
   width: 100%;
   padding: 12px 15px;
-  /* margin-bottom: 20px; Removed - handled by form-group */
   border-radius: 6px;
   border: 1px solid #ced4da;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Focus state for inputs */
 input[type="number"]:focus,
 input[type="date"]:focus {
   border-color: #80bdff;
@@ -77,26 +79,24 @@ input[type="date"]:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* === Input Error Styling === */
+/* Error styling for inputs */
 input.input-error {
-    border-color: #dc3545; /* Red border for error */
+    border-color: #dc3545;
 }
 
 input.input-error:focus {
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); /* Red glow on focus */
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
+/* Error messages */
 .error-message {
-    color: #dc3545; /* Red text */
-    font-size: 0.875em; /* Smaller font size */
-    display: none; /* Hidden by default */
-    margin-top: 6px; /* Space above error message */
-    /* position: absolute; Example if you want it positioned differently */
-    /* bottom: -18px; */
-    /* left: 0; */
+    color: #dc3545;
+    font-size: 0.875em;
+    display: none;
+    margin-top: 6px;
 }
 
-/* === Button Styling === */
+/* Button styling */
 button {
   width: 100%;
   padding: 12px 15px;
@@ -111,11 +111,12 @@ button {
   transition: background-color 0.2s ease;
 }
 
+/* Button hover effect */
 button:hover {
   background-color: #0056b3;
 }
 
-/* === Results Box Styling === */
+/* Results box styling */
 .result {
   background-color: #e9ecef;
   padding: 20px;
@@ -139,22 +140,23 @@ button:hover {
   margin-right: 5px;
 }
 
-/* === Calendar Styling === */
+/* Calendar header with navigation */
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px; /* Space below header */
-    position: relative; /* For potential absolute positioning inside */
+    margin-bottom: 20px;
+    position: relative;
 }
 
 .calendar-header h2 {
-    margin: 0 10px; /* Add horizontal margin */
+    margin: 0 10px;
     flex-grow: 1;
     text-align: center;
     font-size: 1.4rem;
 }
 
+/* Year navigation buttons */
 .year-nav-btn {
     background: none;
     border: 1px solid #ced4da;
@@ -165,8 +167,7 @@ button:hover {
     font-size: 1rem;
     line-height: 1;
     transition: background-color 0.2s ease, color 0.2s ease;
-    width: auto; /* Override default button width */
-    /* margin: 0 5px; Removed - handled by flex spacing */
+    width: auto;
     flex-shrink: 0;
 }
 
@@ -175,7 +176,7 @@ button:hover {
     color: white;
 }
 
-
+/* Table styling for both calendar and payment schedule */
 .calendar table, .payment-schedule table {
   width: 100%;
   border-collapse: collapse;
@@ -193,16 +194,18 @@ button:hover {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #495057;
-  position: sticky; /* Make header sticky if table scrolls */
-  top: 0; /* Adjust if needed based on layout */
+  position: sticky;
+  top: 0;
   z-index: 1;
 }
 
-.calendar td:nth-child(4) { /* Target the '%' column */
+/* Right-align percentage column */
+.calendar td:nth-child(4) {
    text-align: right;
    font-weight: 500;
 }
 
+/* Highlight current week */
 .highlight {
   background-color: #d1ecf1;
   color: #0c5460;
@@ -214,7 +217,7 @@ button:hover {
    border-bottom-color: #b8daff;
 }
 
-/* === Payment Schedule Styling === */
+/* Payment schedule styling */
 .payment-schedule {
   margin-top: 20px;
 }
@@ -226,6 +229,7 @@ button:hover {
   font-size: 0.9rem;
 }
 
+/* Payment schedule navigation */
 .payment-controls {
   display: flex;
   justify-content: space-between;
@@ -260,6 +264,7 @@ button:hover {
   text-align: center;
 }
 
+/* Payment status colors */
 .payment-status-paid {
   color: #28a745;
   font-weight: 600;
@@ -274,7 +279,7 @@ button:hover {
   color: #6c757d;
 }
 
-/* === Responsive Adjustments === */
+/* Responsive adjustments for tablets */
 @media (max-width: 900px) {
   .wrapper {
     gap: 30px;
@@ -284,6 +289,7 @@ button:hover {
   }
 }
 
+/* Responsive adjustments for mobile */
 @media (max-width: 768px) {
   body {
     padding: 20px;
@@ -304,7 +310,7 @@ button:hover {
       font-size: 0.9rem;
   }
   .calendar th, .calendar td, .payment-schedule th, .payment-schedule td {
-      padding: 8px 10px; /* Reduce padding on smaller screens */
+      padding: 8px 10px;
       font-size: 0.9em;
   }
 }
